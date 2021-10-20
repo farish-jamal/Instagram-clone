@@ -1,20 +1,33 @@
 .post{
-    margin: 15px 0;
+    margin-bottom: 10px;
     padding: 10px;
+    border: 1px solid lightgrey;
+    background-color: #FFFFFF;
+    cursor: pointer;
 }
 .post__header{
     display: flex;
     align-items: center;
+    padding: 5px;
 }
-.post__header img{
-    width: 40px;
-    border-radius: 50%;
+.post__profile{
     margin-right: 10px;
     padding: 10px;
 }
 .post__img{
     width: 400px;
+    border-bottom: 1px solid lightgrey;
+    border-top: 1px solid lightgrey;
 }
 .post__img img{
     width: 100%;
+}
+.post__captions{
+    padding: 5px;
+}
+
+@media screen and (max-width: 500px) {
+    .post__img{
+        width: 90vw;
+    }
 }
