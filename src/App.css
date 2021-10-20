@@ -15,7 +15,7 @@
     background-color: white;
 }
 .app__headerImage{
-    padding: 10px;
+    padding: 10px 20px;
     width: 120px;
     object-fit: contain;
 }
