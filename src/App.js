@@ -9,6 +9,7 @@ import { Button, Input } from "@mui/material";
 function App() {
   const [posts, setPosts] = useState([]);
   const [open, setOpen] = useState(false);
+  const [opensignin, setOpenSignIn] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -17,11 +18,11 @@ function App() {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        //If user  login
+        //If user  login :
         console.log(authUser);
         setUser(authUser);
       } else {
-        //If they log out
+        //If they log out :
         setUser(null);
       }
     });
@@ -55,13 +56,21 @@ function App() {
   const SignUp = (event) => {
     event.preventDefault();
     auth
-      .createUserWithEmailAndPassword(email, password).then((authUser)=>{
+      .createUserWithEmailAndPassword(email, password)
+      .then((authUser) => {
         return authUser.user.updateProfile({
-          displayName: username
-        })
+          displayName: username,
+        });
       })
       .catch((error) => alert(error.message));
+      setOpen(false)
   };
+
+  const SignIn = (event) =>{
+    event.preventDefault();
+    auth.signInWithEmailAndPassword(email,password).catch((error) => alert(error.message))
+    setOpenSignIn(false)
+  }
   return (
     <div className="app">
       <Modal className="app__modal" open={open} onClose={() => setOpen(false)}>
@@ -108,22 +117,88 @@ function App() {
           </div>
         </Box>
       </Modal>
+
+      <Modal className="app__modal" open={opensignin} onClose={() => setOpenSignIn(false)}>
+        <Box sx={style}>
+          <div id="modal-modal-title" variant="h6" component="h2">
+            <form className="app__signup">
+              <center>
+                <img
+                  className="app__headerImage"
+                  src="https://clipart.info/images/ccovers/1522452762Instagram-logo-png-text.png"
+                  alt="Logo-main"
+                />
+              </center>
+              <Input
+                placeholder="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Input
+                placeholder="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Button
+                type="submit"
+                onClick={SignIn}
+                style={{
+                  backgroundColor: "lightpink",
+                  marginTop: "20px",
+                  color: "#000",
+                }}
+              >
+                SignIn
+              </Button>
+            </form>
+          </div>
+        </Box>
+      </Modal>
+
       <div className="app__header">
         <img
           className="app__headerImage"
           src="https://clipart.info/images/ccovers/1522452762Instagram-logo-png-text.png"
           alt="Logo-main"
         />
-        <Button
-          onClick={() => setOpen(true)}
-          style={{
-            backgroundColor: "lightpink",
-            marginRight: "20px",
-            color: "#000",
-          }}
-        >
-          SignUp
-        </Button>
+        {user ? (
+          <Button
+            onClick={() => auth.signOut()}
+            style={{
+              backgroundColor: "lightpink",
+              marginRight: "20px",
+              color: "#000",
+            }}
+          >
+            Logout
+          </Button>
+        ) : (
+
+          <div className="login__container">
+            <Button
+            onClick={() => setOpenSignIn(true)}
+            style={{
+              backgroundColor: "lightpink",
+              marginRight: "20px",
+              color: "#000",
+            }}
+          >
+            SignIn
+          </Button>
+              <Button
+            onClick={() => setOpen(true)}
+            style={{
+              backgroundColor: "lightpink",
+              marginRight: "20px",
+              color: "#000",
+            }}
+          >
+            SignUp
+          </Button>
+          </div> 
+        )}
       </div>
       <div className="app__body">
         {posts.map(({ id, post }) => (
