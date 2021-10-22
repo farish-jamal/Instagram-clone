@@ -5,6 +5,7 @@ import { db, auth } from "./firebase";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { Button, Input } from "@mui/material";
+import ImageUpload from "./ImageUpload";
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -15,33 +16,7 @@ function App() {
   const [username, setUsername] = useState("");
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((authUser) => {
-      if (authUser) {
-        //If user  login :
-        console.log(authUser);
-        setUser(authUser);
-      } else {
-        //If they log out :
-        setUser(null);
-      }
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, [user, username]);
-
-  useEffect(() => {
-    db.collection("posts").onSnapshot((snapshot) =>
-      setPosts(
-        snapshot.docs.map((doc) => ({
-          id: doc.id,
-          post: doc.data(),
-        }))
-      )
-    );
-  }, []);
-
+  // Modal styling :
   const style = {
     position: "absolute",
     top: "50%",
@@ -53,26 +28,75 @@ function App() {
     boxShadow: 24,
     p: 4,
   };
+
+  useEffect(() => {
+    // Responding on every auth change :
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        //If user  login :
+        console.log(authUser);
+        setUser(authUser);
+      } else {
+        //If User log out or user not available:
+        setUser(null);
+      }
+    });
+    return () => {
+      // Cleanup before performing another task :
+      unsubscribe();
+    };
+    // dependencies
+  }, [user, username]);
+
+  useEffect(() => {
+    // collecting data from database:
+    db.collection("posts").orderBy('timestamp', 'desc').onSnapshot((snapshot) =>
+      setPosts(
+        snapshot.docs.map((doc) => ({
+          id: doc.id,
+          post: doc.data(),
+        }))
+      )
+    );
+  }, []);
+
+  // Sign up Logic :
   const SignUp = (event) => {
     event.preventDefault();
+    // Creating a new user in database :
     auth
       .createUserWithEmailAndPassword(email, password)
       .then((authUser) => {
+        // updating the display name with username provided by user :
         return authUser.user.updateProfile({
           displayName: username,
         });
       })
       .catch((error) => alert(error.message));
-      setOpen(false)
+      // Setting modal close
+    setOpen(false);
   };
 
-  const SignIn = (event) =>{
+  // Sign In logic :
+  const SignIn = (event) => {
     event.preventDefault();
-    auth.signInWithEmailAndPassword(email,password).catch((error) => alert(error.message))
-    setOpenSignIn(false)
-  }
+    // signIn with auth module :
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .catch((error) => alert(error.message));
+    setOpenSignIn(false);
+  };
   return (
     <div className="app">
+      {
+        user?.displayName ? (
+          <ImageUpload username={user.displayName} />
+        ) :
+        (
+          <h3 style={{position: 'relative', top: '80px', textAlign: "center", paddingBottom:"20px"}}>Sorry! You need to login to upload</h3>
+        )
+      }
+      {/* Modal for signIn */}
       <Modal className="app__modal" open={open} onClose={() => setOpen(false)}>
         <Box sx={style}>
           <div id="modal-modal-title" variant="h6" component="h2">
@@ -118,7 +142,12 @@ function App() {
         </Box>
       </Modal>
 
-      <Modal className="app__modal" open={opensignin} onClose={() => setOpenSignIn(false)}>
+      {/* Modal for LogIn */}
+      <Modal
+        className="app__modal"
+        open={opensignin}
+        onClose={() => setOpenSignIn(false)}
+      >
         <Box sx={style}>
           <div id="modal-modal-title" variant="h6" component="h2">
             <form className="app__signup">
@@ -163,6 +192,7 @@ function App() {
           src="https://clipart.info/images/ccovers/1522452762Instagram-logo-png-text.png"
           alt="Logo-main"
         />
+        {/* Conditional randering of sigin and logout */}
         {user ? (
           <Button
             onClick={() => auth.signOut()}
@@ -175,36 +205,35 @@ function App() {
             Logout
           </Button>
         ) : (
-
           <div className="login__container">
             <Button
-            onClick={() => setOpenSignIn(true)}
-            style={{
-              backgroundColor: "lightpink",
-              marginRight: "20px",
-              color: "#000",
-            }}
-          >
-            SignIn
-          </Button>
-              <Button
-            onClick={() => setOpen(true)}
-            style={{
-              backgroundColor: "lightpink",
-              marginRight: "20px",
-              color: "#000",
-            }}
-          >
-            SignUp
-          </Button>
-          </div> 
+              onClick={() => setOpenSignIn(true)}
+              style={{
+                backgroundColor: "lightpink",
+                marginRight: "20px",
+                color: "#000",
+              }}
+            >
+              SignIn
+            </Button>
+            <Button
+              onClick={() => setOpen(true)}
+              style={{
+                backgroundColor: "lightpink",
+                marginRight: "20px",
+                color: "#000",
+              }}
+            >
+              SignUp
+            </Button>
+          </div>
         )}
       </div>
       <div className="app__body">
         {posts.map(({ id, post }) => (
           <Post
             key={id}
-            userName={post.userName}
+            userName={post.username}
             caption={post.caption}
             imgUrl={post.imgUrl}
           />
