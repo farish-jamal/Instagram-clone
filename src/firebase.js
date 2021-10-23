@@ -4,13 +4,13 @@ import "firebase/compat/firestore";
 import "firebase/compat/storage";
 
 const firebaseApp = firebase.initializeApp({
-  apiKey: "AIzaSyCtbNKJpp9ijGjEUV22M_jMP527zCPxbqk",
-  authDomain: "instagram-b5282.firebaseapp.com",
-  projectId: "instagram-b5282",
-  storageBucket: "instagram-b5282.appspot.com",
-  messagingSenderId: "138023251273",
-  appId: "1:138023251273:web:ae2e70f8773d80cabd3e98",
-  measurementId: "G-3K3ZRR3X7X",
+  apiKey: "AIzaSyB65d8axL28Oc64z2Bn-3KIv_66EzNw5Ec",
+  authDomain: "instagram-cc71c.firebaseapp.com",
+  projectId: "instagram-cc71c",
+  storageBucket: "instagram-cc71c.appspot.com",
+  messagingSenderId: "1048320397028",
+  appId: "1:1048320397028:web:d007131ae4a364b6b0e6f1",
+  measurementId: "G-QWHMJYTX7L"
 });
 
 const db = firebaseApp.firestore();

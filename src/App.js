@@ -93,7 +93,7 @@ function App() {
           <ImageUpload username={user.displayName} />
         ) :
         (
-          <h3 style={{position: 'relative', top: '80px', textAlign: "center", paddingBottom:"20px"}}>Sorry! You need to login to upload</h3>
+          <h3 style={{position: 'relative', top: '80px', textAlign: "center", paddingBottom:"20px"}}>Sorry! You need to SignIn to upload</h3>
         )
       }
       {/* Modal for signIn */}
@@ -214,7 +214,7 @@ function App() {
                 color: "#000",
               }}
             >
-              SignIn
+              lOGIn
             </Button>
             <Button
               onClick={() => setOpen(true)}
