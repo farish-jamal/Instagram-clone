@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button } from "@mui/material";
+import { Button, Input } from "@mui/material";
 import {storage , db} from './firebase'
 import firebase from '@firebase/app-compat';
 
@@ -46,11 +46,14 @@ function ImageUpload({username}) {
         )
     }
     return (
-        <div style={{position: 'relative', top: '90px'}}>
+        <div style={{position: 'relative', top: '90px'}} className="img__upload">
             <progress value={progress} max="100" />
-            <input type="text" placeholder="Enter a caption" onChange={e => setCaption(e.target.value)} value={caption} />
+            <Input type="text" placeholder="Enter a caption" onChange={e => setCaption(e.target.value)} value={caption} />
             <input type="file" onChange={handleChange} />
-            <Button onClick={handleUpload}>
+            <Button onClick={handleUpload} style={{
+                  backgroundColor: "lightpink",
+                  color: "#000",
+                }}>
                 Upload
             </Button>
         </div>
